@@ -1,2 +1,2 @@
-# loger-s-Secure-Autorun-for-windows
-A system that let's "Allowed drives" run CMD commands with letting any drive run commands
+# logers-SecureAutorun
+A system that lets "Allowed drives" run CMD commands without letting any drive run commands

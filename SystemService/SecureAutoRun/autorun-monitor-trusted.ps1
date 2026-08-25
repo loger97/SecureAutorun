@@ -6,7 +6,7 @@ $StopFile = "C:\SecureAutoRun\stop.txt"
 $IncluedExternalDrives = $true
 
 #TrustHash, for code execution this must be the same on external drive.
-$RequiredTrustHash = "9b2d1a2fab125347df0e07ea7e1ef4eedd6b1c76da863ab4e32aec7216982a43"
+$RequiredTrustHash = get-content "C:\SecureAutoRun\trustHash"
 
 $seen = @{}
 
@@ -81,7 +81,7 @@ while ($True) {
                 if (-not $hasValidTrust) {
                     if (-not $seen.ContainsKey("ignored_$key")) {
                         if (Test-Path $trustPath) {
-                            Write-Host "Ignored $($drive.DeviceID) � trust.txt found but missing required security text"
+                            Write-Host "Ignored $($drive.DeviceID) � trust.txt found but missing required security data"
                         } else {
                             Write-Host "Ignored $($drive.DeviceID) � no trust.txt found"
                         }

@@ -1,12 +1,12 @@
 ﻿#Certificate file
-$TrustFileName = "trust.txt"
+$TrustFileName = "trust"
 $StopFile = "C:\SecureAutoRun\stop.txt"
 
 # Allows external drive scaning
 $IncluedExternalDrives = $true
 
 #TrustHash, for code execution this must be the same on external drive.
-$RequiredTrustHash = get-content "C:\SecureAutoRun\trustHash"
+$RequiredTrustHash = get-content "C:\ProgramData\LSAR\trustHash"
 
 $seen = @{}
 
@@ -45,9 +45,10 @@ while ($True) {
 
 
         foreach ($drive in $drives) {
+            $trustRoot = $drive.DeviceID + "\DriveTrustInfo\"
             $root = $drive.DeviceID + "\"
             $infPath = Join-Path $root "autorun.inf"
-            $trustPath = Join-Path $root $TrustFileName
+            $trustPath = Join-Path $trustRoot $TrustFileName
 
 
             if (Test-Path $infPath) {
@@ -63,7 +64,7 @@ while ($True) {
                 $hasValidTrust = $false
                 if (Test-Path $trustPath) {
                     if ([string]::IsNullOrWhiteSpace($RequiredTrustHash)) {
-                        # Original behavior: any trust.txt is accepted
+                        # Original behavior: any trust is accepted
                         $hasValidTrust = $true
                     } else {
                         try {
@@ -81,9 +82,9 @@ while ($True) {
                 if (-not $hasValidTrust) {
                     if (-not $seen.ContainsKey("ignored_$key")) {
                         if (Test-Path $trustPath) {
-                            Write-Host "Ignored $($drive.DeviceID) � trust.txt found but missing required security data"
+                            Write-Host "Ignored $($drive.DeviceID) � security data found but security data is incorrect"
                         } else {
-                            Write-Host "Ignored $($drive.DeviceID) � no trust.txt found"
+                            Write-Host "Ignored $($drive.DeviceID) � required security data not found"
                         }
                         $seen["ignored_$key"] = $true
                     }
